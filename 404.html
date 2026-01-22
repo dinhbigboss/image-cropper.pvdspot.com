@@ -64,6 +64,10 @@
         .animate-float {
             animation: float 4s ease-in-out infinite;
         }
+
+        #cookieBanner {
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
     </style>
 </head>
 
@@ -118,6 +122,31 @@
         </div>
     </main>
 
+    <div id="cookieBanner" class="hidden fixed bottom-6 left-6 right-6 md:left-auto md:max-w-md z-[110]">
+        <div
+            class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 p-6 rounded-3xl shadow-2xl backdrop-blur-lg bg-white/90 dark:bg-darkCard/90 flex flex-col gap-4">
+            <div class="flex items-start gap-4">
+                <div
+                    class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 text-primary rounded-full flex items-center justify-center shrink-0">
+                    <i class="fas fa-cookie-bite text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-900 dark:text-white text-lg">Cookie Notice</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        We use cookies to enhance your browsing experience and analyze our traffic. By clicking
+                        <strong>Accept</strong>, you consent to our use of cookies.
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button id="acceptCookies"
+                    class="px-6 py-2.5 bg-primary text-white font-bold rounded-xl hover:opacity-90 transition-all text-sm">
+                    Accept
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-white dark:bg-darkCard border-t border-slate-200 dark:border-slate-800 py-12">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-500">
             <div class="md:col-span-2">
@@ -149,12 +178,29 @@
     <script>
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
 
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            // document.documentElement.classList.add('dark');
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
+
+        window.addEventListener('load', () => {
+            const cookieBanner = document.getElementById('cookieBanner');
+            const acceptBtn = document.getElementById('acceptCookies');
+
+            if (!localStorage.getItem('cookiesAccepted')) {
+                cookieBanner.classList.remove('hidden');
+            }
+
+            acceptBtn.addEventListener('click', () => {
+                localStorage.setItem('cookiesAccepted', 'true');
+                cookieBanner.classList.add('hidden');
+            });
+        });
     </script>
 </body>
 

@@ -10,18 +10,21 @@
     <title>Image Cropper - Crop Photos Fast, Free & Secure</title>
 
     <meta name="title" content="Image Cropper - Crop Photos Fast, Free & Secure">
-    <meta name="description" content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
+    <meta name="description"
+        content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://image-cropper.pvdspot.com/">
     <meta property="og:title" content="Image Cropper - Crop Photos Fast, Free & Secure">
-    <meta property="og:description" content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
+    <meta property="og:description"
+        content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
     <meta property="og:image" content="https://image-cropper.pvdspot.com/og-image.png">
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://image-cropper.pvdspot.com/">
     <meta property="twitter:title" content="Image Cropper - Crop Photos Fast, Free & Secure">
-    <meta property="twitter:description" content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
+    <meta property="twitter:description"
+        content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
     <meta property="twitter:image" content="https://image-cropper.pvdspot.com/og-image.png">
 
     <link rel="canonical" href="https://image-cropper.pvdspot.com/">
@@ -97,13 +100,16 @@
             font-weight: 800 !important;
         }
 
-        /* Custom Accordion Style */
         details summary::-webkit-details-marker {
             display: none;
         }
 
         details[open] summary i {
             transform: rotate(180deg);
+        }
+
+        #cookieBanner {
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -263,7 +269,8 @@
                             <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
                         </summary>
                         <div class="px-6 pb-6 text-slate-500 text-sm">
-                            Yes, Image Cropper is completely free for both personal and commercial use without any hidden
+                            Yes, Image Cropper is completely free for both personal and commercial use without any
+                            hidden
                             costs or watermarks.
                         </div>
                     </details>
@@ -294,6 +301,31 @@
             </div>
         </div>
     </main>
+
+    <div id="cookieBanner" class="hidden fixed bottom-6 left-6 right-6 md:left-auto md:max-w-md z-[110]">
+        <div
+            class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 p-6 rounded-3xl shadow-2xl backdrop-blur-lg bg-white/90 dark:bg-darkCard/90 flex flex-col gap-4">
+            <div class="flex items-start gap-4">
+                <div
+                    class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 text-primary rounded-full flex items-center justify-center shrink-0">
+                    <i class="fas fa-cookie-bite text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-900 dark:text-white text-lg">Cookie Notice</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        We use cookies to enhance your browsing experience and analyze our traffic. By clicking
+                        <strong>Accept</strong>, you consent to our use of cookies.
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button id="acceptCookies"
+                    class="px-6 py-2.5 bg-primary text-white font-bold rounded-xl hover:opacity-90 transition-all text-sm">
+                    Accept
+                </button>
+            </div>
+        </div>
+    </div>
 
     <footer class="bg-white dark:bg-darkCard border-t border-slate-200 dark:border-slate-800 py-12">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-500">
@@ -387,6 +419,20 @@
         document.getElementById('themeToggle').addEventListener('click', () => {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        window.addEventListener('load', () => {
+            const cookieBanner = document.getElementById('cookieBanner');
+            const acceptBtn = document.getElementById('acceptCookies');
+
+            if (!localStorage.getItem('cookiesAccepted')) {
+                cookieBanner.classList.remove('hidden');
+            }
+
+            acceptBtn.addEventListener('click', () => {
+                localStorage.setItem('cookiesAccepted', 'true');
+                cookieBanner.classList.add('hidden');
+            });
         });
     </script>
 </body>
