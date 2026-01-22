@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <title>Image Cropper - Crop Photos Fast, Free & Secure</title>
+
+    <meta name="title" content="Image Cropper - Crop Photos Fast, Free & Secure">
+    <meta name="description" content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://image-cropper.pvdspot.com/">
+    <meta property="og:title" content="Image Cropper - Crop Photos Fast, Free & Secure">
+    <meta property="og:description" content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
+    <meta property="og:image" content="https://image-cropper.pvdspot.com/og-image.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://image-cropper.pvdspot.com/">
+    <meta property="twitter:title" content="Image Cropper - Crop Photos Fast, Free & Secure">
+    <meta property="twitter:description" content="Easy-to-use online image cropper. Crop, resize, and frame your photos instantly in your browser. Fast, free, and privacy-focused.">
+    <meta property="twitter:image" content="https://image-cropper.pvdspot.com/og-image.png">
+
+    <link rel="canonical" href="https://image-cropper.pvdspot.com/">
+
+    <meta name="robots" content="index, follow">
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        accent: '#f43f5e',
+                        darkBg: '#020617',
+                        darkCard: '#0f172a'
+                    },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .cropper-container {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .cropper-view-box {
+            outline: 2px solid #6366f1;
+            outline-color: rgba(99, 102, 241, 0.75);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        #dropZone.dragover {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .ratio-active {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 1px #6366f1;
+            color: #6366f1 !important;
+            font-weight: 800 !important;
+        }
+
+        /* Custom Accordion Style */
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details[open] summary i {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+
+    <nav
+        class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-darkBg/70 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer">
+                <a href="/"><span class="text-2xl font-extrabold tracking-tight">Image <span
+                            class="text-primary">Cropper</span></span></a>
+            </div>
+            <button id="themeToggle"
+                class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                <i class="fas fa-moon dark:hidden"></i>
+                <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-10">
+
+        <div id="uploadWrapper" class="max-w-2xl mx-auto py-20 text-center animate-slide-up">
+            <h1 class="text-5xl font-extrabold mb-6">Edit your photos <span class="text-primary">perfectly.</span></h1>
+            <p class="text-slate-500 dark:text-slate-400 mb-10 text-lg">Upload, crop, and export in seconds. No
+                registration required.</p>
+            <div id="dropZone"
+                class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-3xl p-12 transition-all cursor-pointer group hover:border-primary">
+                <input type="file" id="fileInput" class="hidden" accept="image/*">
+                <div class="flex flex-col items-center gap-4" onclick="document.getElementById('fileInput').click()">
+                    <div
+                        class="w-20 h-20 bg-indigo-50 dark:bg-indigo-900/20 text-primary rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-cloud-arrow-up text-3xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xl font-bold">Click or drag photo here</p>
+                        <p class="text-sm opacity-50 mt-1">Supports JPG, PNG, WebP (Max 10MB)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="editorWrapper" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 animate-slide-up mb-20">
+            <div class="lg:col-span-3 space-y-6">
+                <div
+                    class="bg-white dark:bg-darkCard p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-6">Aspect Ratio</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button
+                            class="ratio-btn ratio-active px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-semibold border-2 border-transparent transition-all"
+                            data-ratio="NaN">Free</button>
+                        <button
+                            class="ratio-btn px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-semibold border-2 border-transparent transition-all"
+                            data-ratio="1">1:1</button>
+                        <button
+                            class="ratio-btn px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-semibold border-2 border-transparent transition-all"
+                            data-ratio="1.7777">16:9</button>
+                        <button
+                            class="ratio-btn px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-semibold border-2 border-transparent transition-all"
+                            data-ratio="0.6666">2:3</button>
+                    </div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mt-8 mb-6">Transformation</h3>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button onclick="cropper.rotate(-90)"
+                            class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white"><i
+                                class="fas fa-rotate-left"></i></button>
+                        <button onclick="cropper.rotate(90)"
+                            class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white"><i
+                                class="fas fa-rotate-right"></i></button>
+                        <button onclick="cropper.scaleX(cropper.getData().scaleX * -1)"
+                            class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white"><i
+                                class="fas fa-arrows-left-right"></i></button>
+                        <button onclick="cropper.reset()"
+                            class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-accent hover:text-white"><i
+                                class="fas fa-sync"></i></button>
+                    </div>
+                    <button id="cropBtn"
+                        class="w-full mt-10 py-4 bg-primary text-white font-extrabold rounded-2xl shadow-xl shadow-indigo-500/30 hover:-translate-y-1 transition-all">CROP
+                        IMAGE</button>
+                    <button onclick="location.reload()"
+                        class="w-full mt-3 py-2 text-sm opacity-50 hover:opacity-100 transition-opacity">Cancel</button>
+                </div>
+            </div>
+            <div
+                class="lg:col-span-9 h-[600px] bg-slate-200 dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 relative">
+                <img id="imageElement" class="max-w-full">
+            </div>
+        </div>
+
+        <section class="py-20 border-t border-slate-200 dark:border-slate-800">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">How to use Image <span class="text-primary">Cropper</span></h2>
+                <p class="text-slate-500">Fast, Simple, and High-Quality image editing.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="p-8 bg-white dark:bg-darkCard rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                    <div
+                        class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 text-primary rounded-xl flex items-center justify-center font-bold text-xl mb-6">
+                        1</div>
+                    <h4 class="font-bold mb-3 text-lg text-slate-900 dark:text-white">Upload Photo</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed">Drag and drop your image into the upload box or
+                        click to select a file from your computer.</p>
+                </div>
+                <div
+                    class="p-8 bg-white dark:bg-darkCard rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                    <div
+                        class="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 text-accent rounded-xl flex items-center justify-center font-bold text-xl mb-6">
+                        2</div>
+                    <h4 class="font-bold mb-3 text-lg text-slate-900 dark:text-white">Adjust & Crop</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed">Choose an aspect ratio, rotate, or flip your
+                        image. Use the crop box to select the perfect area.</p>
+                </div>
+                <div
+                    class="p-8 bg-white dark:bg-darkCard rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
+                    <div
+                        class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 rounded-xl flex items-center justify-center font-bold text-xl mb-6">
+                        3</div>
+                    <h4 class="font-bold mb-3 text-lg text-slate-900 dark:text-white">Download Result</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed">Preview your edited photo and download it
+                        instantly in high-quality PNG format.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 border-t border-slate-200 dark:border-slate-800">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold mb-10 text-center">Frequently Asked Questions</h2>
+                <div class="space-y-4">
+                    <details
+                        class="group bg-white dark:bg-darkCard rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+                        <summary class="flex justify-between items-center p-6 cursor-pointer font-bold">
+                            Is my data safe with Image Cropper?
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                        </summary>
+                        <div class="px-6 pb-6 text-slate-500 text-sm">
+                            Absolutely. Your photos are processed 100% in your browser. No files are ever uploaded to
+                            our servers, ensuring total privacy.
+                        </div>
+                    </details>
+                    <details
+                        class="group bg-white dark:bg-darkCard rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+                        <summary class="flex justify-between items-center p-6 cursor-pointer font-bold">
+                            What image formats are supported?
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                        </summary>
+                        <div class="px-6 pb-6 text-slate-500 text-sm">
+                            We support all major image formats including JPG, PNG, WebP, and SVG. The maximum file size
+                            is 10MB.
+                        </div>
+                    </details>
+                    <details
+                        class="group bg-white dark:bg-darkCard rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+                        <summary class="flex justify-between items-center p-6 cursor-pointer font-bold">
+                            Can I use this for free commercially?
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                        </summary>
+                        <div class="px-6 pb-6 text-slate-500 text-sm">
+                            Yes, Image Cropper is completely free for both personal and commercial use without any hidden
+                            costs or watermarks.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <div id="resultModal"
+            class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-darkBg/90 backdrop-blur-md">
+            <div
+                class="bg-white dark:bg-darkCard max-w-4xl w-full rounded-3xl overflow-hidden shadow-2xl animate-slide-up">
+                <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+                    <h3 class="text-xl font-bold">Crop Result</h3>
+                    <button onclick="closeModal()" class="text-2xl">&times;</button>
+                </div>
+                <div class="p-8 flex flex-col items-center">
+                    <img id="resultPreview" class="max-h-[50vh] rounded-xl shadow-lg mb-8">
+                    <div class="flex gap-4">
+                        <a id="downloadPng"
+                            class="px-8 py-3 bg-primary text-white font-bold rounded-xl flex items-center gap-2 hover:bg-indigo-600 transition-all">
+                            <i class="fas fa-download"></i> Download PNG
+                        </a>
+                        <button onclick="closeModal()"
+                            class="px-8 py-3 border border-slate-200 dark:border-slate-800 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Edit
+                            More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-darkCard border-t border-slate-200 dark:border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-500">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-2 mb-4">
+                    <a href="/"><span class="font-bold text-xl text-slate-900 dark:text-white">Image <span
+                                class="text-primary">Cropper</span></span></a>
+                </div>
+                <p class="max-w-sm">Leading edge browser-side image processing. Private, fast, and free forever.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 text-slate-900 dark:text-white uppercase text-xs">Legal</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="https://pvdspot.com/privacy-policy.html" target="_blank"
+                            class="hover:text-primary">Privacy Policy</a></li>
+                    <li><a href="https://pvdspot.com/terms-of-use.html" target="_blank" class="hover:text-primary">Terms
+                            of Use</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 text-slate-900 dark:text-white uppercase text-xs">About</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="https://pvdspot.com/about-us.html" target="_blank" class="hover:text-primary">About
+                            Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadWrapper = document.getElementById('uploadWrapper');
+        const editorWrapper = document.getElementById('editorWrapper');
+        const imageElement = document.getElementById('imageElement');
+        const cropBtn = document.getElementById('cropBtn');
+        const resultModal = document.getElementById('resultModal');
+        const resultPreview = document.getElementById('resultPreview');
+        const downloadPng = document.getElementById('downloadPng');
+        let cropper;
+
+        fileInput.addEventListener('change', function (e) {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => initCropper(e.target.result);
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => initCropper(e.target.result);
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function initCropper(src) {
+            imageElement.src = src;
+            uploadWrapper.classList.add('hidden');
+            editorWrapper.classList.remove('hidden');
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(imageElement, { viewMode: 2, dragMode: 'move', autoCropArea: 0.8 });
+        }
+
+        document.querySelectorAll('.ratio-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('ratio-active'));
+                this.classList.add('ratio-active');
+                cropper.setAspectRatio(parseFloat(this.dataset.ratio));
+            });
+        });
+
+        cropBtn.addEventListener('click', () => {
+            const canvas = cropper.getCroppedCanvas({ imageSmoothingQuality: 'high' });
+            const dataURL = canvas.toDataURL('image/png');
+            resultPreview.src = dataURL;
+            downloadPng.href = dataURL;
+            downloadPng.download = `image-cropper-${Date.now()}.png`;
+            resultModal.classList.remove('hidden');
+        });
+
+        function closeModal() { resultModal.classList.add('hidden'); }
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+
+</html>

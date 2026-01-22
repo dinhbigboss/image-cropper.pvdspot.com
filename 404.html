@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <title>Page Not Found</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        accent: '#f43f5e',
+                        darkBg: '#020617',
+                        darkCard: '#0f172a'
+                    },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+
+    <nav
+        class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-darkBg/70 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer">
+                <a href="/"><span class="text-2xl font-extrabold tracking-tight">Image <span
+                            class="text-primary">Cropper</span></span></a>
+            </div>
+            <button id="themeToggle"
+                class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                <i class="fas fa-moon dark:hidden"></i>
+                <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center px-6 py-20">
+        <div class="max-w-2xl w-full text-center animate-slide-up">
+            <div class="relative mb-12">
+                <div class="text-[12rem] font-black text-slate-200 dark:text-slate-800/50 leading-none select-none">
+                    404
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div
+                        class="w-32 h-32 bg-indigo-500/10 dark:bg-primary/20 rounded-full flex items-center justify-center animate-float">
+                        <i class="fas fa-search-minus text-5xl text-primary"></i>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
+                Page <span class="text-primary">Not Found.</span>
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 mb-10 text-lg max-w-md mx-auto leading-relaxed">
+                The page you're looking for might have been moved or deleted.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="/"
+                    class="px-8 py-4 bg-primary text-white font-extrabold rounded-2xl shadow-xl shadow-indigo-500/30 hover:-translate-y-1 transition-all flex items-center gap-2">
+                    <i class="fas fa-home"></i> BACK TO HOME
+                </a>
+                <button onclick="history.back()"
+                    class="px-8 py-4 bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
+                    GO BACK
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-darkCard border-t border-slate-200 dark:border-slate-800 py-12">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-slate-500">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-2 mb-4">
+                    <a href="/"><span class="font-bold text-xl text-slate-900 dark:text-white">Image <span
+                                class="text-primary">Cropper</span></span></a>
+                </div>
+                <p class="max-w-sm">Leading edge browser-side image processing. Private, fast, and free forever.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 text-slate-900 dark:text-white uppercase text-xs">Legal</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="https://pvdspot.com/privacy-policy.html" target="_blank"
+                            class="hover:text-primary">Privacy Policy</a></li>
+                    <li><a href="https://pvdspot.com/terms-of-use.html" target="_blank" class="hover:text-primary">Terms
+                            of Use</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 text-slate-900 dark:text-white uppercase text-xs">About</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="https://pvdspot.com/about-us.html" target="_blank" class="hover:text-primary">About
+                            Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // document.documentElement.classList.add('dark');
+        }
+    </script>
+</body>
+
+</html>
